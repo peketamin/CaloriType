@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - 'mockup/**'
+      - 'tests/**'
+      - 'package.json'
+      - 'package-lock.json'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -27,7 +30,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Check JavaScript
-        run: node --check mockup/app.js
+        run: |
+          node --check mockup/storage.js
+          node --check mockup/app.js
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install test dependencies
+        run: npm ci --ignore-scripts
+      - name: Install test browser
+        run: npx playwright install --with-deps chromium
+      - name: Browser acceptance tests
+        run: npm test
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload only the app

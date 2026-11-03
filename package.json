@@ -1,0 +1,12 @@
+{
+  "name": "caloritype",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "test": "node tests/run.cjs",
+    "test:performance": "node tests/run.cjs --performance"
+  },
+  "devDependencies": {
+    "playwright": "1.57.0"
+  }
+}

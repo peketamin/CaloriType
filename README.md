@@ -20,7 +20,16 @@
 - [技術設計](docs/technical-design.md)：計算、データ、保存・修復、性能の具体化
 - [決定状況と残る具体化](docs/open-decisions.md)：採用した20項目と詳細の残件
 - [PFCの技術調査](docs/offline-pfc.md)：未採用のモデル案と調査根拠
-- [ADR](docs/adr/README.md)：代替案を退けた理由と不利益を残す5本
+- [ADR](docs/adr/README.md)：代替案を退けた理由と不利益を残す6本
 - [ロードマップ](docs/roadmap.md)：段階開発。リリース日や費用は未確定
 
 PRDはAtlassianの公開テンプレートを基に整理しています。採用済みの要件、具体化の提案、未検証の仮説を分け、機能仕様をADRへ重複させない方針です。
+
+## 最新の操作と確認
+
+- 目標変更・予算の再計算、区分の開始時刻補正、現在時指定、食品編集画面。
+- PFC不明時はカロリーから仮置きし、2点スライダーで2.5ポイント刻みに比率を変更。
+- 原文＋本アプリによる英訳。
+- 直近2年の詳細と、古い原本を保持した年次キャッシュ。タブ間は項目ごとの後勝ちと通知。
+
+[2年窓と競合の設計](docs/data-window-and-conflicts.md)を参照。テストは npm ci → npx playwright install chromium → npm test。人工データ10万件の明示的な性能測定は npm run test:performance。

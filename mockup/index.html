@@ -1,14 +1,651 @@
-<!DOCTYPE html>
-<html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#f7f8fa"><title>CaloriType | 食事と、ちょうどいい毎日。</title><link rel="stylesheet" href="style.css"></head>
-<body><div class="app"><header><div class="brand"><button class="icon" id="menuBtn" aria-label="メニューを開く">☰</button><span class="brandmark">◒</span><span>Calori<span class="brand-light">Type</span></span><span class="prototype">PROTOTYPE</span></div><nav class="segmented" aria-label="画面切り替え"><button data-view="home" class="selected">今日の記録</button><button data-view="stats">統計・目標</button></nav><div class="header-actions"><span class="local-dot">この端末に保存</span><button class="icon" id="helpBtn" aria-label="使い方">?</button><span class="avatar">K</span></div></header>
-<div class="mode-bar" id="modeBar"><div><strong id="modeCaption">デモモード</strong><span id="modeDescription">サンプルで自由に試せます</span></div><div><label for="modeSwitch" class="sr-only">利用モード</label><select id="modeSwitch"><option value="demo">デモ</option><option value="record">記録（試用）</option></select><button id="resetDemo" class="text-btn">デモをリセット</button></div></div><main><section id="homeView"><div class="page-heading"><div><div class="eyebrow">YOUR DAILY BALANCE</div><h1>食事と、ちょうどいい毎日。</h1><p class="subtitle">打って、調整して、あなたのペースで。</p><span class="demo-notice">操作モック · サンプルデータから始まります</span></div><div class="date-picker"><button class="icon" id="prevDay" aria-label="前日">‹</button><input type="date" id="dayInput" aria-label="表示日"><button class="icon" id="nextDay" aria-label="翌日">›</button><button id="todayBtn" class="text-btn">今日</button></div></div>
-<div class="dashboard"><aside class="overview"><section class="card balance-card"><div class="card-heading"><h2>今日のバランス</h2><span class="small-label">DAILY</span></div><div class="ring" id="ring"><div><span class="tiny muted">摂取カロリー</span><div><strong id="total">0</strong><span class="unit"> kcal</span></div><span class="target-label">目標 <span id="targetLabel">2,000</span> <span id="targetUnit">kcal</span></span></div></div><div class="remaining"><span id="remainText">目標まであと</span><strong id="remain">0 <small>kcal</small></strong></div><div class="food-equivalent"><span class="food-emoji" id="equivEmoji">🍫</span><div><strong id="equiv">チョコレート 約0個分</strong><p>残りのカロリーを、身近なものに。</p></div></div><div class="separator"></div><div class="card-heading"><h3>PFC バランス</h3><span class="muted tiny">エネルギー比</span></div><div class="pfc-bar" id="pfcBar"></div><div class="pfc-legend" id="pfcLegend"></div><p id="pfcNote" class="footnote">食品の数値は目安です。量や調理方法に合わせて調整できます。</p></section><div class="gentle-note"><span>✧</span><div><strong>ぴったりより、続けられること。</strong><p>1日単位の増減より、長い目でバランスを見ていきましょう。</p></div></div><section class="quote-card card" id="quoteCard"><div class="card-heading"><span class="small-label">今日の言葉</span><button id="nextQuote" class="text-btn">別の言葉 ↻</button></div><blockquote id="quoteText"></blockquote><a id="quoteSource" target="_blank" rel="noopener noreferrer"></a><p class="footnote">原文を掲載しています。</p></section></aside>
-<div class="diary"><section class="card composer-card"><div class="card-heading"><h2><span class="plus-dot">＋</span> 食べたものを記録</h2><span class="small-label">QUICK ADD</span></div><form id="foodForm"><div class="search-wrap"><span>⌕</span><input id="foodSearch" autocomplete="off" placeholder="食材・料理を検索、または自由に入力" aria-label="食材・料理"><kbd>⌘ K</kbd><div id="suggestions" class="suggestions" hidden></div></div><div id="editor" hidden><div class="edit-top"><label>カロリー <div class="number-wrap"><input id="kcalInput" type="number" min="0" max="100000" step="0.1" required><span>kcal</span></div></label><label>食事<select id="mealSelect"><option value="breakfast">朝食</option><option value="lunch" selected>昼食</option><option value="dinner">夕食</option><option value="late">夜食</option></select></label><label>時刻<input id="timeInput" type="time" value="12:30" required></label></div><div class="quantity-line"><label>量<input id="quantityInput" type="number" min="0" step="any" value="1"></label><select id="quantityUnit" aria-label="量の単位"><option value="serving">食分</option><option value="g">g</option><option value="piece">個</option></select><span id="quantityHint" class="footnote"></span></div><div class="eating-out"><label><input id="eatingOut" type="checkbox" role="switch">外食モード</label><div id="rateControls" hidden><button type="button" id="rateDown">−10%</button><strong id="rateLabel">+0%</strong><button type="button" id="rateUp">+10%</button></div></div><p class="adjust-label">量を調整 <button type="button" class="text-btn" id="resetKcal">基準量に戻す</button></p><div id="fractionButtons" class="chips"></div><div id="deltaButtons" class="chips deltas"></div><div class="macro-inputs"><label><i class="p-dot"></i> P タンパク質<input id="pInput" type="number" min="0" step="0.1" value="0">g</label><label><i class="f-dot"></i> F 脂質<input id="fInput" type="number" min="0" step="0.1" value="0">g</label><label><i class="c-dot"></i> C 炭水化物<input id="cInput" type="number" min="0" step="0.1" value="0">g</label></div><p class="footnote">カロリー調整に合わせてPFCも比例変更。各値は個別に編集できます。</p><div class="editor-footer"><button type="button" id="cancelEdit" class="text-btn">キャンセル</button><button class="primary" id="saveFood">＋ 記録する</button></div></div></form><div class="quick-hint" id="quickHint"><span>↵</span> 候補から選んで、量を調整。自分だけの正確さで記録。</div></section>
-<section class="timeline-section"><div class="timeline-header"><div><h2>食事のタイムライン <span class="count-badge" id="entryCount">0</span></h2><p>アイテムをドラッグして、食事の間を移動できます</p></div><div class="history-controls"><button class="icon" id="undoBtn" aria-label="元に戻す" title="元に戻す">↶</button><button class="icon" id="redoBtn" aria-label="やり直す" title="やり直す">↷</button></div></div><div class="completion-row"><span id="dayStatus"></span><button id="completeDay" class="secondary">この日の記録を完了</button></div><div id="timeline"></div><div class="day-boundary"><span class="boundary-line"></span><label><span>⠿ 1日の区切り</span><strong id="boundaryLabel">24:00</strong><input id="boundary" type="range" min="20" max="30" step="0.25" value="24" aria-label="1日の区切り時刻"></label><p>バーをドラッグして調整 · 区切り前の深夜の食事は前日の記録へ</p></div></section></div></div></section>
-<section id="statsView" hidden><div class="page-heading"><div><div class="eyebrow">A BIGGER PICTURE</div><h1>あなたのペースを、見つけよう。</h1><p class="subtitle">今日だけでなく、これまでと、これからを。</p></div><button class="secondary" id="editGoal">⚑ 目標を編集</button></div><div class="stats-top"><section class="card calendar-card"><div class="card-heading"><div><span class="small-label">CALORIE CALENDAR</span><h2 id="monthTitle"></h2></div><div><button id="prevMonth" class="icon" aria-label="前月">‹</button><button id="nextMonth" class="icon" aria-label="翌月">›</button></div></div><div class="calendar-weekdays"><span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span>土</span><span>日</span><span>週合計</span></div><div id="calendar"></div><div class="heatmap-legend"><span>少なめ</span><i></i><span>目標付近</span><i></i><span>多め</span><span class="muted">数値は kcal</span></div></section><section class="card weight-card"><div class="card-heading"><h2>目標までのバランス</h2><span class="pill">サンプル</span></div><div class="weight-numbers"><div><span>現在の体重</span><strong id="currentWeightLabel">62.4<small> kg</small></strong></div><span class="weight-arrow">→</span><div><span>目標の体重</span><strong id="goalWeightLabel">58.0<small> kg</small></strong></div></div><div class="scale-scene"><div class="scale-pole"></div><div class="scale-base"></div><div class="scale-beam" id="scaleBeam"><div class="pan left-pan"><span>食事</span></div><div class="pan right-pan"><span>目標</span></div><span class="scale-pivot">●</span></div></div><div class="pace-status" id="paceStatus"></div><p class="footnote">天秤は記録済み日の摂取量と目標の比較です。体重の変化予測ではありません。</p></section></div><div class="section-title"><h2>長い目で、整える</h2><p>期間ごとの余地から、無理のない調整を。</p></div><div class="period-grid" id="periodCards"></div></section>
-<footer><span>◒ CaloriType</span><span>自分のペースで、健やかに。</span><span>モックアップ · データはこのブラウザ内に保存</span></footer></main>
-<nav class="mobile-tabs"><button data-view="home" class="selected">◷<span>今日の記録</span></button><button data-view="stats">▥<span>統計・目標</span></button></nav></div>
-<div class="scrim" id="scrim" hidden></div><aside id="drawer" class="drawer" hidden><div class="drawer-top"><span class="brandmark">◒</span><strong>CaloriType</strong><button id="closeMenu" class="icon" aria-label="閉じる">×</button></div><p class="small-label">MY SPACE</p><button data-view="home">◷　今日の記録</button><button data-view="stats">▥　統計・目標</button><p class="small-label">DATA & SETTINGS</p><button id="goalMenu">⚑　目標を設定</button><button id="jsonExport">↓　JSONでエクスポート</button><button id="mdExport">↓　Markdownでエクスポート</button><button id="catalogMenu">☷　食品データを編集</button><button id="restoreMenu">↑　JSONから復元</button><button id="repairMenu">⌑　保存の診断・修復</button><button id="settingsMenu">⚙　表示・履歴・食事ブロック</button><button id="tutorialMenu">?　使い方・チュートリアル</button><div class="privacy-note"><strong>⌑ データはあなたの手元に</strong><p>記録はこのブラウザに保存されます。IndexedDBで保存。オンライン同期は未実装です。</p><p>共有端末では実際の健康情報の入力を避けてください。将来の同期には認証、利用者ごとのアクセス制御、暗号化が必要です。</p></div></aside>
-<dialog id="goalDialog"><form id="goalForm"><div class="card-heading"><h2>あなたの目標</h2><button type="button" class="icon close-dialog" aria-label="閉じる">×</button></div><p class="subtitle">無理なく続けられる、自分のペースで。</p><label>1日の目標カロリー（kcal）<input id="goalKcal" type="number" min="1" max="10000" required></label><label>現在の体重（kg）<input id="currentWeight" type="number" min="20" max="400" step="0.1"></label><label>目標の体重（kg）<input id="goalWeight" type="number" min="20" max="400" step="0.1"></label><p class="footnote">目標カロリーは手動入力です。自動算出は未実装。体重欄は省略でき、空欄なら未設定と表示します。</p><button class="primary full">保存する</button></form></dialog>
-<input id="restoreFile" type="file" accept="application/json,.json" hidden><input id="catalogFile" type="file" accept="application/json,.json" hidden><dialog id="catalogDialog"><div class="card-heading"><h2>食品データ</h2><button class="icon close-dialog" aria-label="閉じる">×</button></div><p class="subtitle">初期値は操作確認用の目安です。編集は過去の食事を変えません。</p><div class="catalog-actions"><button id="catalogExport" class="secondary">書き出し</button><button id="catalogImport" class="secondary">上書き読み込み</button></div><div id="catalogList"></div></dialog><dialog id="settingsDialog"><form id="settingsForm"><div class="card-heading"><h2>設定</h2><button type="button" class="icon close-dialog" aria-label="閉じる">×</button></div><label>操作履歴の件数<input id="historyLimit" type="number" min="1" max="10000" required></label><label class="checkbox-label"><input id="showQuotes" type="checkbox">今日の言葉を表示</label><p class="footnote">食事ブロックの表示名（記録は保持されます）</p><div id="mealSettings"></div><button class="primary full">保存する</button></form></dialog><dialog id="tutorial"><div class="tutorial-visual" id="tutorialVisual">◒</div><span class="small-label" id="tutorialStep"></span><h2 id="tutorialTitle"></h2><p id="tutorialBody"></p><div class="tutorial-dots" id="tutorialDots"></div><div class="tutorial-actions"><button class="text-btn" id="skipTutorial">閉じる</button><button class="primary" id="nextTutorial">次へ →</button></div></dialog><div class="toast" id="toast" role="status" hidden></div><script src="app.js"></script></body></html>
-
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#f7f8fa" />
+    <title>CaloriType | 食事と、ちょうどいい毎日。</title>
+    <link rel="stylesheet" href="style.css?v=2" />
+  </head>
+  <body>
+    <div id="bootStatus" class="boot-status" role="status">
+      CaloriType<small
+        >記録を読み込み中…初回の移行・集計には時間がかかることがあります。</small
+      >
+    </div>
+    <div class="app" inert aria-busy="true">
+      <header>
+        <div class="brand">
+          <button class="icon" id="menuBtn" aria-label="メニューを開く">
+            ☰</button
+          ><span class="brandmark">◒</span
+          ><span>Calori<span class="brand-light">Type</span></span
+          ><span class="prototype">PROTOTYPE</span>
+        </div>
+        <nav class="segmented" aria-label="画面切り替え">
+          <button data-view="home" class="selected">今日の記録</button
+          ><button data-view="stats">統計・目標</button>
+        </nav>
+        <div class="header-actions">
+          <span class="local-dot">この端末に保存</span
+          ><button class="icon" id="helpBtn" aria-label="使い方">?</button
+          ><span class="avatar">K</span>
+        </div>
+      </header>
+      <div class="mode-bar" id="modeBar">
+        <div>
+          <strong id="modeCaption">デモモード</strong
+          ><span id="modeDescription">サンプルで自由に試せます</span>
+        </div>
+        <div>
+          <label for="modeSwitch" class="sr-only">利用モード</label
+          ><select id="modeSwitch">
+            <option value="demo">デモ</option>
+            <option value="record">記録（試用）</option></select
+          ><button id="resetDemo" class="text-btn">デモをリセット</button>
+        </div>
+      </div>
+      <main>
+        <section id="homeView">
+          <div class="page-heading">
+            <div>
+              <div class="eyebrow">YOUR DAILY BALANCE</div>
+              <h1>食事と、ちょうどいい毎日。</h1>
+              <p class="subtitle">打って、調整して、あなたのペースで。</p>
+              <span class="demo-notice"
+                >操作モック · サンプルデータから始まります</span
+              >
+            </div>
+            <div class="date-picker">
+              <button class="icon" id="prevDay" aria-label="前日">‹</button
+              ><input type="date" id="dayInput" aria-label="表示日" /><button
+                class="icon"
+                id="nextDay"
+                aria-label="翌日"
+              >
+                ›</button
+              ><button id="todayBtn" class="text-btn">今日</button>
+            </div>
+          </div>
+          <div class="dashboard">
+            <aside class="overview">
+              <section class="card balance-card">
+                <div class="card-heading">
+                  <h2>今日のバランス</h2>
+                  <span class="small-label">DAILY</span>
+                </div>
+                <div class="ring" id="ring">
+                  <div>
+                    <span class="tiny muted">摂取カロリー</span>
+                    <div>
+                      <strong id="total">0</strong
+                      ><span class="unit"> kcal</span>
+                    </div>
+                    <span class="target-label"
+                      >目標 <span id="targetLabel">2,000</span>
+                      <span id="targetUnit">kcal</span></span
+                    >
+                  </div>
+                </div>
+                <div class="remaining">
+                  <span id="remainText">目標まであと</span
+                  ><strong id="remain">0 <small>kcal</small></strong>
+                </div>
+                <div class="food-equivalent">
+                  <span class="food-emoji" id="equivEmoji">🍫</span>
+                  <div>
+                    <strong id="equiv">チョコレート 約0個分</strong>
+                    <p>残りのカロリーを、身近なものに。</p>
+                  </div>
+                </div>
+                <div class="separator"></div>
+                <div class="card-heading">
+                  <h3>PFC バランス</h3>
+                  <span class="muted tiny">エネルギー比</span>
+                </div>
+                <div class="pfc-bar" id="pfcBar"></div>
+                <div class="pfc-legend" id="pfcLegend"></div>
+                <p id="pfcNote" class="footnote">
+                  食品の数値は目安です。量や調理方法に合わせて調整できます。
+                </p>
+              </section>
+              <div class="gentle-note">
+                <span>✧</span>
+                <div>
+                  <strong>ぴったりより、続けられること。</strong>
+                  <p>1日単位の増減より、長い目でバランスを見ていきましょう。</p>
+                </div>
+              </div>
+              <section class="quote-card card" id="quoteCard">
+                <div class="card-heading">
+                  <span class="small-label">今日の言葉</span
+                  ><button id="nextQuote" class="text-btn">別の言葉 ↻</button>
+                </div>
+                <blockquote id="quoteText"></blockquote>
+                <p id="quoteEnglish" class="quote-english"></p>
+                <p class="footnote">英訳：CaloriType（本アプリ訳）</p>
+                <a
+                  id="quoteSource"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                ></a>
+                <p class="footnote">原文を掲載しています。</p>
+              </section>
+            </aside>
+            <div class="diary">
+              <section class="card composer-card">
+                <div class="card-heading">
+                  <h2><span class="plus-dot">＋</span> 食べたものを記録</h2>
+                  <span class="small-label">QUICK ADD</span>
+                </div>
+                <form id="foodForm">
+                  <div class="search-wrap">
+                    <span>⌕</span
+                    ><input
+                      id="foodSearch"
+                      autocomplete="off"
+                      placeholder="食材・料理を検索、または自由に入力"
+                      aria-label="食材・料理"
+                    /><kbd>⌘ K</kbd>
+                    <div id="suggestions" class="suggestions" hidden></div>
+                  </div>
+                  <div id="editor" hidden>
+                    <div class="edit-top">
+                      <label
+                        >カロリー
+                        <div class="number-wrap">
+                          <input
+                            id="kcalInput"
+                            type="number"
+                            min="0"
+                            max="100000"
+                            step="0.1"
+                            required
+                          /><span>kcal</span>
+                        </div></label
+                      ><label
+                        >食事<select id="mealSelect">
+                          <option value="breakfast">朝食</option>
+                          <option value="lunch" selected>昼食</option>
+                          <option value="dinner">夕食</option>
+                          <option value="late">夜食</option>
+                        </select></label
+                      ><label
+                        >時刻<input
+                          id="timeInput"
+                          type="time"
+                          value="12:30"
+                          required
+                        /><button id="setNow" type="button" class="text-btn">
+                          現在時を指定
+                        </button></label
+                      >
+                    </div>
+                    <div class="quantity-line">
+                      <label
+                        >量<input
+                          id="quantityInput"
+                          type="number"
+                          min="0"
+                          step="any"
+                          value="1" /></label
+                      ><select id="quantityUnit" aria-label="量の単位">
+                        <option value="serving">食分</option>
+                        <option value="g">g</option>
+                        <option value="piece">個</option></select
+                      ><span id="quantityHint" class="footnote"></span>
+                    </div>
+                    <div class="eating-out">
+                      <label
+                        ><input
+                          id="eatingOut"
+                          type="checkbox"
+                          role="switch"
+                        />外食モード</label
+                      >
+                      <div id="rateControls" hidden>
+                        <button type="button" id="rateDown">−10%</button
+                        ><strong id="rateLabel">+0%</strong
+                        ><button type="button" id="rateUp">+10%</button>
+                      </div>
+                    </div>
+                    <p class="adjust-label">
+                      量を調整
+                      <button type="button" class="text-btn" id="resetKcal">
+                        基準量に戻す
+                      </button>
+                    </p>
+                    <div id="fractionButtons" class="chips"></div>
+                    <div id="deltaButtons" class="chips deltas"></div>
+                    <div id="pfcEstimator" class="pfc-estimator" hidden>
+                      <div class="card-heading">
+                        <span>カロリーからPFCを仮置き</span
+                        ><small>エネルギー比 · 2.5%刻み</small>
+                      </div>
+                      <div class="dual-range" id="ratioTrack">
+                        <input
+                          id="pfcFirst"
+                          type="range"
+                          min="0"
+                          max="100"
+                          step="2.5"
+                          value="15"
+                          aria-label="タンパク質の割合"
+                        /><input
+                          id="pfcSecond"
+                          type="range"
+                          min="0"
+                          max="100"
+                          step="2.5"
+                          value="40"
+                          aria-label="タンパク質と脂質の合計割合"
+                        />
+                      </div>
+                      <div id="ratioLabels" class="ratio-labels"></div>
+                      <p class="footnote">
+                        食材の実測値ではなく、選んだ比率による仮の値です。
+                      </p>
+                    </div>
+                    <div class="macro-inputs">
+                      <label
+                        ><i class="p-dot"></i> P タンパク質<input
+                          id="pInput"
+                          type="number"
+                          min="0"
+                          step="0.1"
+                          value="0"
+                        />g</label
+                      ><label
+                        ><i class="f-dot"></i> F 脂質<input
+                          id="fInput"
+                          type="number"
+                          min="0"
+                          step="0.1"
+                          value="0"
+                        />g</label
+                      ><label
+                        ><i class="c-dot"></i> C 炭水化物<input
+                          id="cInput"
+                          type="number"
+                          min="0"
+                          step="0.1"
+                          value="0"
+                        />g</label
+                      >
+                    </div>
+                    <p class="footnote">
+                      カロリー調整に合わせてPFCも比例変更。各値は個別に編集できます。
+                    </p>
+                    <div class="editor-footer">
+                      <button type="button" id="cancelEdit" class="text-btn">
+                        キャンセル</button
+                      ><button class="primary" id="saveFood">
+                        ＋ 記録する
+                      </button>
+                    </div>
+                  </div>
+                </form>
+                <div class="quick-hint" id="quickHint">
+                  <span>↵</span>
+                  候補から選んで、量を調整。自分だけの正確さで記録。
+                </div>
+              </section>
+              <section class="timeline-section">
+                <div class="timeline-header">
+                  <div>
+                    <h2>
+                      食事のタイムライン
+                      <span class="count-badge" id="entryCount">0</span>
+                    </h2>
+                    <p>アイテムをドラッグして、食事の間を移動できます</p>
+                  </div>
+                  <div class="history-controls">
+                    <button
+                      class="icon"
+                      id="undoBtn"
+                      aria-label="元に戻す"
+                      title="元に戻す"
+                    >
+                      ↶</button
+                    ><button
+                      class="icon"
+                      id="redoBtn"
+                      aria-label="やり直す"
+                      title="やり直す"
+                    >
+                      ↷
+                    </button>
+                  </div>
+                </div>
+                <div class="completion-row">
+                  <span id="dayStatus"></span
+                  ><button id="completeDay" class="secondary">
+                    この日の記録を完了
+                  </button>
+                </div>
+                <div id="timeline"></div>
+                <div class="day-boundary">
+                  <span class="boundary-line"></span
+                  ><label
+                    ><span>⠿ 1日の区切り</span
+                    ><strong id="boundaryLabel">24:00</strong
+                    ><input
+                      id="boundary"
+                      type="range"
+                      min="20"
+                      max="30"
+                      step="0.25"
+                      value="24"
+                      aria-label="1日の区切り時刻"
+                  /></label>
+                  <p>
+                    バーをドラッグして調整 · 区切り前の深夜の食事は前日の記録へ
+                  </p>
+                </div>
+              </section>
+            </div>
+          </div>
+        </section>
+        <section id="statsView" hidden>
+          <div class="page-heading">
+            <div>
+              <div class="eyebrow">A BIGGER PICTURE</div>
+              <h1>あなたのペースを、見つけよう。</h1>
+              <p class="subtitle">今日だけでなく、これまでと、これからを。</p>
+            </div>
+            <button class="secondary" id="editGoal">⚑ 目標を編集</button>
+          </div>
+          <div class="stats-top">
+            <section class="card calendar-card">
+              <div class="card-heading">
+                <div>
+                  <span class="small-label">CALORIE CALENDAR</span>
+                  <h2 id="monthTitle"></h2>
+                </div>
+                <div>
+                  <button id="prevMonth" class="icon" aria-label="前月">
+                    ‹</button
+                  ><button id="nextMonth" class="icon" aria-label="翌月">
+                    ›
+                  </button>
+                </div>
+              </div>
+              <div class="calendar-weekdays">
+                <span>月</span><span>火</span><span>水</span><span>木</span
+                ><span>金</span><span>土</span><span>日</span
+                ><span>週合計</span>
+              </div>
+              <div id="calendar"></div>
+              <p class="footnote">
+                2年より前の日付は「履歴」から原本を開けます。カロリー集計は下の年次サマリーで確認できます。
+              </p>
+              <div class="heatmap-legend">
+                <span>少なめ</span><i></i><span>目標付近</span><i></i
+                ><span>多め</span><span class="muted">数値は kcal</span>
+              </div>
+            </section>
+            <section class="card weight-card">
+              <div class="card-heading">
+                <h2>目標までのバランス</h2>
+                <span class="pill">サンプル</span>
+              </div>
+              <div class="weight-numbers">
+                <div>
+                  <span>現在の体重</span
+                  ><strong id="currentWeightLabel"
+                    >62.4<small> kg</small></strong
+                  >
+                </div>
+                <span class="weight-arrow">→</span>
+                <div>
+                  <span>目標の体重</span
+                  ><strong id="goalWeightLabel">58.0<small> kg</small></strong>
+                </div>
+              </div>
+              <div class="scale-scene">
+                <div class="scale-pole"></div>
+                <div class="scale-base"></div>
+                <div class="scale-beam" id="scaleBeam">
+                  <div class="pan left-pan"><span>食事</span></div>
+                  <div class="pan right-pan"><span>目標</span></div>
+                  <span class="scale-pivot">●</span>
+                </div>
+              </div>
+              <div class="pace-status" id="paceStatus"></div>
+              <p class="footnote">
+                天秤は記録済み日の摂取量と目標の比較です。体重の変化予測ではありません。
+              </p>
+            </section>
+          </div>
+          <div class="section-title">
+            <h2>長い目で、整える</h2>
+            <p>期間ごとの余地から、無理のない調整を。</p>
+          </div>
+          <div class="period-grid" id="periodCards"></div>
+          <section class="card archive-card">
+            <div class="card-heading">
+              <h2>2年より前の年次集計</h2>
+              <button id="rebuildAnnual" class="text-btn">再計算</button>
+            </div>
+            <p class="footnote" id="windowNote"></p>
+            <div id="annualSummaries"></div>
+          </section>
+        </section>
+        <footer>
+          <span>◒ CaloriType</span><span>自分のペースで、健やかに。</span
+          ><span>モックアップ · データはこのブラウザ内に保存</span>
+        </footer>
+      </main>
+      <nav class="mobile-tabs">
+        <button data-view="home" class="selected">
+          ◷<span>今日の記録</span></button
+        ><button data-view="stats">▥<span>統計・目標</span></button>
+      </nav>
+    </div>
+    <div class="scrim" id="scrim" hidden></div>
+    <aside id="drawer" class="drawer" hidden>
+      <div class="drawer-top">
+        <span class="brandmark">◒</span><strong>CaloriType</strong
+        ><button id="closeMenu" class="icon" aria-label="閉じる">×</button>
+      </div>
+      <p class="small-label">MY SPACE</p>
+      <button data-view="home">◷　今日の記録</button
+      ><button data-view="stats">▥　統計・目標</button>
+      <p class="small-label">DATA & SETTINGS</p>
+      <button id="goalMenu">⚑　目標を設定</button
+      ><button id="jsonExport">↓　JSONでエクスポート</button
+      ><button id="mdExport">↓　Markdownでエクスポート</button
+      ><button id="catalogMenu">☷　食品データを編集</button
+      ><button id="restoreMenu">↑　JSONから復元</button
+      ><button id="repairMenu">⌑　保存の診断・修復</button
+      ><button id="settingsMenu">⚙　表示・履歴・食事ブロック</button
+      ><button id="tutorialMenu">?　使い方・チュートリアル</button>
+      <div class="privacy-note">
+        <strong>⌑ データはあなたの手元に</strong>
+        <p>
+          記録はこのブラウザに保存されます。IndexedDBで保存。オンライン同期は未実装です。
+        </p>
+        <p>
+          共有端末では実際の健康情報の入力を避けてください。将来の同期には認証、利用者ごとのアクセス制御、暗号化が必要です。
+        </p>
+      </div>
+    </aside>
+    <dialog id="goalDialog">
+      <form id="goalForm">
+        <div class="card-heading">
+          <h2>あなたの目標</h2>
+          <button type="button" class="icon close-dialog" aria-label="閉じる">
+            ×
+          </button>
+        </div>
+        <p class="subtitle">無理なく続けられる、自分のペースで。</p>
+        <label>適用日<input id="goalEffective" type="date" required /></label
+        ><label
+          >1日の目標カロリー（kcal）<input
+            id="goalKcal"
+            type="number"
+            min="1"
+            max="10000"
+            required /></label
+        ><label
+          >現在の体重（kg）<input
+            id="currentWeight"
+            type="number"
+            min="20"
+            max="400"
+            step="0.1" /></label
+        ><label
+          >目標の体重（kg）<input
+            id="goalWeight"
+            type="number"
+            min="20"
+            max="400"
+            step="0.1" /></label
+        ><button id="recalculateGoal" type="button" class="secondary full">
+          変更後の予算を再計算
+        </button>
+        <p id="goalPreview" class="footnote" role="status"></p>
+        <p class="footnote">
+          初回は今日から、変更は翌日からが初期値です。過去は当時の目標で評価。身体条件からの自動提案式は別途検証中です。
+        </p>
+        <button class="primary full">保存する</button>
+      </form>
+    </dialog>
+    <input
+      id="restoreFile"
+      type="file"
+      accept="application/json,.json"
+      hidden
+    /><input
+      id="catalogFile"
+      type="file"
+      accept="application/json,.json"
+      hidden
+    />
+    <dialog id="catalogDialog">
+      <div class="card-heading">
+        <h2>食品データ</h2>
+        <button class="icon close-dialog" aria-label="閉じる">×</button>
+      </div>
+      <p class="subtitle">
+        初期値は操作確認用の目安です。編集は過去の食事を変えません。
+      </p>
+      <div class="catalog-actions">
+        <button id="addCatalogFood" class="secondary">新規食品</button
+        ><button id="catalogExport" class="secondary">書き出し</button
+        ><button id="catalogImport" class="secondary">上書き読み込み</button>
+      </div>
+      <div id="catalogList"></div>
+    </dialog>
+    <dialog id="foodEditDialog">
+      <form id="foodEditForm">
+        <div class="card-heading">
+          <h2>食品を編集</h2>
+          <button
+            type="button"
+            id="cancelFoodEdit"
+            class="icon"
+            aria-label="閉じる"
+          >
+            ×
+          </button>
+        </div>
+        <label>食品名<input id="foodEditName" required maxlength="120" /></label
+        ><label
+          >別名・検索キーワード<input id="foodEditAliases" maxlength="300"
+        /></label>
+        <div class="edit-top">
+          <label
+            >基準量<input
+              id="foodEditAmount"
+              type="number"
+              min="0.01"
+              step="any"
+              required /></label
+          ><label
+            >単位<select id="foodEditUnit">
+              <option value="serving">食分</option>
+              <option value="g">g</option>
+              <option value="piece">個</option>
+            </select></label
+          ><label
+            >基準量の重量(g)<input
+              id="foodEditGrams"
+              type="number"
+              min="0.01"
+              step="any"
+          /></label>
+        </div>
+        <label
+          >基準量のカロリー<input
+            id="foodEditKcal"
+            type="number"
+            min="0"
+            step="any"
+            required
+        /></label>
+        <div class="edit-top">
+          <label
+            >P(g)<input
+              id="foodEditP"
+              type="number"
+              min="0"
+              step="any" /></label
+          ><label
+            >F(g)<input
+              id="foodEditF"
+              type="number"
+              min="0"
+              step="any" /></label
+          ><label
+            >C(g)<input id="foodEditC" type="number" min="0" step="any"
+          /></label>
+        </div>
+        <p class="footnote">
+          PFCの空欄は不明として保存します。過去の食事は変わりません。
+        </p>
+        <button class="primary full">食品を保存</button>
+      </form>
+    </dialog>
+    <dialog id="settingsDialog">
+      <form id="settingsForm">
+        <div class="card-heading">
+          <h2>設定</h2>
+          <button type="button" class="icon close-dialog" aria-label="閉じる">
+            ×
+          </button>
+        </div>
+        <label
+          >操作履歴の件数<input
+            id="historyLimit"
+            type="number"
+            min="1"
+            max="10000"
+            required /></label
+        ><label class="checkbox-label"
+          ><input id="showQuotes" type="checkbox" />今日の言葉を表示</label
+        >
+        <p class="footnote">食事ブロックの表示名（記録は保持されます）</p>
+        <div id="mealSettings"></div>
+        <button class="primary full">保存する</button>
+      </form>
+    </dialog>
+    <dialog id="tutorial">
+      <div class="tutorial-visual" id="tutorialVisual">◒</div>
+      <span class="small-label" id="tutorialStep"></span>
+      <h2 id="tutorialTitle"></h2>
+      <p id="tutorialBody"></p>
+      <div class="tutorial-dots" id="tutorialDots"></div>
+      <div class="tutorial-actions">
+        <button class="text-btn" id="skipTutorial">閉じる</button
+        ><button class="primary" id="nextTutorial">次へ →</button>
+      </div>
+    </dialog>
+    <div class="toast" id="toast" role="status" hidden></div>
+    <script src="storage.js?v=2"></script>
+    <script src="app.js?v=2"></script>
+  </body>
+</html>
