@@ -4,7 +4,7 @@
 
 ## 現在の状態
 
-要件定義・操作設計の段階です。実装・動作検証・リリースは未完了です。
+要件定義・操作設計の段階です。[操作モックを非公開URLで確認できます](https://calorie-note-mockup-k7m3.peketamin.chatgpt.site)。本番アプリは未完成です。モックのソースと確認方法は[mockup/README.md](mockup/README.md)を参照してください。
 
 ## 文書
 
