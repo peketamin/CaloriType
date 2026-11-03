@@ -47,3 +47,9 @@ Chromiumで記録、連続分数操作、外食補正、PFC比例、Undo/Redo、
 https://calorie-note-mockup-k7m3.peketamin.chatgpt.site
 
 Sitesで所有者限定に配置しています。操作データは閲覧中のブラウザに保存されます。
+
+## GitHub Pagesとデモ切り替え
+
+[公開手順とモード](PUBLISHING.md)を参照。デモと記録（試用）は別保存、別履歴です。初期の目標や体重を記録側へ引き継ぎません。旧SitesのURLは以前のスナップショットで、この切り替え機能の最新版ではありません。
+
+モード分離・切替後の保存・デモのリセット・モード違いの復元拒否・/CaloriType/配下の資産読み込みをChromiumで確認しています。
