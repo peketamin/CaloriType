@@ -11,7 +11,8 @@
 ## 文書
 
 - [デザインドック](docs/design.md)：目的、画面、入力・計算ルール、受け入れ条件、未決事項
-- [未決事項とおすすめ](docs/open-decisions.md)：20項目の判断候補と優先順位
+- [未決事項とおすすめ](docs/open-decisions.md)：採用した20項目と残る具体化
+- [オフラインPFC推測の技術調査](docs/offline-pfc.md)：既存モデル・バッチ準備・組み込みの案
 - [ADR一覧](docs/adr/README.md)：決定の背景、選択肢、決定と影響
 - [ロードマップ](docs/roadmap.md)：操作モック、初版、統計、将来の同期・iOS対応
 
