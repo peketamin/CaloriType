@@ -601,6 +601,33 @@ label select {
 .timeline-section {
   margin-top: 28px;
 }
+.day-copy-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-bottom: 14px;
+}
+.day-copy-row .secondary {
+  min-height: 44px;
+}
+#copyMarkdownText {
+  width: 100%;
+  min-height: 180px;
+  max-height: 45svh;
+  resize: vertical;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px;
+  font:
+    14px/1.7 ui-monospace,
+    monospace;
+}
+.copy-markdown-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
 .timeline-header {
   display: flex;
   align-items: center;

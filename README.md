@@ -4,11 +4,11 @@
 
 ## 現在の状態
 
-要件定義・操作設計の段階です。[操作モックを非公開URLで確認できます](https://calorie-note-mockup-k7m3.peketamin.chatgpt.site)。本番アプリは未完成です。モックのソースと確認方法は[mockup/README.md](mockup/README.md)を参照してください。
+操作版を[GitHub Pages](https://peketamin.github.io/CaloriType/)で公開しています。記録モードは本人のデータを保存できますが、実機Safari・継続運用などの確認が残るため「試用」と表示しています。実装済みの範囲と残件は[仕様監査](docs/spec-audit.md)、ソースと確認方法は[mockup/README.md](mockup/README.md)を参照してください。
 
 ## GitHub Pages
 
-想定公開先は https://peketamin.github.io/CaloriType/ です。公開状態はActionsのデプロイ結果で確認します。[公開手順](mockup/PUBLISHING.md)を参照。
+公開先は https://peketamin.github.io/CaloriType/ です。更新時はActionsのブラウザテスト通過後にデプロイします。[公開手順](mockup/PUBLISHING.md)を参照。
 
 最新版はデモ/記録（試用）をいつでも切り替えられ、保存・履歴・バックアップを分離しています。初回はデモ。既存のSites URLは以前のスナップショットです。
 
@@ -27,9 +27,11 @@ PRDはAtlassianの公開テンプレートを基に整理しています。採�
 
 ## 最新の操作と確認
 
+- 表示中の1日分を、食事区分の小計と食品名・kcalだけでMarkdownコピー。
 - 目標変更・予算の再計算、区分の開始時刻補正、現在時指定、食品編集画面。
 - PFC不明時はカロリーから仮置きし、2点スライダーで2.5ポイント刻みに比率を変更。
 - 原文＋本アプリによる英訳。
 - 直近2年の詳細と、古い原本を保持した年次キャッシュ。タブ間は項目ごとの後勝ちと通知。
 
 [2年窓と競合の設計](docs/data-window-and-conflicts.md)を参照。テストは npm ci → npx playwright install chromium → npm test。人工データ10万件の明示的な性能測定は npm run test:performance。
+

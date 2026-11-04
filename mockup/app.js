@@ -488,6 +488,10 @@ function renderHome() {
     ? `PFC不明 ${t.unknown}件。割合は既知の値だけから計算しています。`
     : "食品の数値は操作確認用の目安です。量や調理方法に合わせて調整できます。";
   $("entryCount").textContent = es.length;
+  $("copyDayMarkdown").setAttribute(
+    "aria-label",
+    `${selected}の食事をMarkdownでコピー`,
+  );
   $("dayStatus").textContent = state.completed[selected]
     ? "● 記録完了 · 長期集計に反映"
     : es.length
@@ -1305,6 +1309,59 @@ async function backup() {
   closeMenu();
 }
 $("jsonExport").onclick = backup;
+function dayMarkdown(day) {
+  const entries = list(day);
+  const text = (value) =>
+    String(value)
+      .replace(/[\u0000-\u001f\u007f\u2028\u2029]+/g, " ")
+      .trim()
+      .replace(/[\\`*_{}\[\]()#+\-.!<>&|~]/g, "\\$&");
+  const groups = state.meals.map((meal) => ({
+    name: meal.name,
+    items: entries.filter((entry) => entry.meal === meal.id),
+  }));
+  const unassigned = entries.filter(
+    (entry) => !state.meals.some((meal) => meal.id === entry.meal),
+  );
+  if (unassigned.length) groups.push({ name: "その他", items: unassigned });
+  const lines = [];
+  for (const group of groups) {
+    if (!group.items.length) continue;
+    lines.push(
+      `- ${text(group.name)}: 小計 ${fmt(total(group.items).kcal)} kcal`,
+    );
+    for (const entry of group.items.sort(
+      (a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time),
+    ))
+      lines.push(`    - ${text(entry.name)}: ${fmt(entry.kcal)} kcal`);
+  }
+  return lines.length ? lines.join("\n") + "\n" : "";
+}
+function selectMarkdownText() {
+  const field = $("copyMarkdownText");
+  field.focus();
+  field.select();
+  field.setSelectionRange(0, field.value.length);
+}
+$("selectMarkdownText").onclick = selectMarkdownText;
+$("copyDayMarkdown").onclick = async () => {
+  const day = selected;
+  const markdown = dayMarkdown(day);
+  if (!markdown) {
+    toast("この日にはコピーする食事の記録がありません。");
+    return;
+  }
+  try {
+    // Keep the clipboard call inside the user gesture, including on Safari.
+    await navigator.clipboard.writeText(markdown);
+    toast(`${day}の食事をMarkdownでコピーしました。`);
+  } catch {
+    $("copyMarkdownTitle").textContent = `${day}の食事`;
+    $("copyMarkdownText").value = markdown;
+    $("copyMarkdownDialog").showModal();
+    selectMarkdownText();
+  }
+};
 $("mdExport").onclick = async () => {
   await saveQueue;
   const exportFull = (await store.full(mode)) || {

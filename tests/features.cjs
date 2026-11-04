@@ -372,13 +372,11 @@ let activeBrowser;
       state: s,
     });
   });
-  await p
-    .locator("#restoreFile")
-    .setInputFiles({
-      name: "bad.json",
-      mimeType: "application/json",
-      buffer: Buffer.from(invalid),
-    });
+  await p.locator("#restoreFile").setInputFiles({
+    name: "bad.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(invalid),
+  });
   await p.waitForFunction(() =>
     document.getElementById("toast").textContent.includes("対応する形式"),
   );
@@ -433,6 +431,178 @@ let activeBrowser;
     path: "/tmp/caloritype-next-mobile.png",
     fullPage: true,
   });
+  const copyContext = await browser.newContext({
+    permissions: ["clipboard-read", "clipboard-write"],
+    viewport: { width: 390, height: 844 },
+  });
+  await copyContext.addInitScript(() =>
+    localStorage.setItem("caloritype-prototype-v1/CaloriType.onboarded", "1"),
+  );
+  const copyPage = await copyContext.newPage();
+  copyPage.on("pageerror", (e) => errors.push(e.message));
+  await copyPage.goto(base + "?mode=record");
+  await copyPage.waitForFunction(() =>
+    document.querySelector(".local-dot").textContent.includes("保存済み"),
+  );
+  const copyDates = await copyPage.evaluate(async () => {
+    const st = new CaloriStore("caloritype-prototype-v1/CaloriType");
+    await st.open();
+    const s = await st.full("record");
+    const day = CaloriStore.key(new Date());
+    const offset = (n) => {
+      const d = new Date(day + "T12:00:00");
+      d.setDate(d.getDate() + n);
+      return CaloriStore.key(d);
+    };
+    const names = { breakfast: "朝", lunch: "昼", dinner: "夜", late: "夜食" };
+    s.meals.forEach((m) => {
+      m.name = names[m.id];
+    });
+    const entry = (id, name, kcal, meal, time, date = day) => ({
+      id,
+      name,
+      kcal,
+      meal,
+      time,
+      date,
+      foodId: "food-0",
+      p: null,
+      f: null,
+      c: null,
+      unit: "serving",
+      amount: 1,
+      eatingOut: false,
+      rate: 0,
+    });
+    s.entries = [
+      entry("copy-yogurt", "ヨーグルト", 280, "breakfast", "08:00"),
+      entry("copy-bread", "パン", 120, "breakfast", "07:00"),
+      entry(
+        "copy-lunch",
+        "カレー *辛口*\n[大盛] & <具>",
+        650,
+        "lunch",
+        "12:00",
+      ),
+      entry("copy-midnight", "牛乳", 100, "late", "01:00", offset(1)),
+      entry("copy-evening", "ナッツ", 25, "late", "21:30"),
+      entry(
+        "copy-other-day",
+        "別の日の食事",
+        600,
+        "lunch",
+        "12:00",
+        offset(-1),
+      ),
+      entry(
+        "copy-after-boundary",
+        "翌日の食事",
+        300,
+        "late",
+        "03:00",
+        offset(1),
+      ),
+    ];
+    s.boundaries = { [day]: 26 };
+    await st.replace("record", s);
+    st.db.close();
+    st.channel?.close();
+    return { day, other: offset(-1), empty: offset(7) };
+  });
+  await copyPage.reload();
+  await copyPage.locator('[data-entry="copy-bread"]').waitFor();
+  const expectedCopy = [
+    "- 朝: 小計 400 kcal",
+    "    - パン: 120 kcal",
+    "    - ヨーグルト: 280 kcal",
+    "- 昼: 小計 650 kcal",
+    "    - カレー \\*辛口\\* \\[大盛\\] \\& \\<具\\>: 650 kcal",
+    "- 夜食: 小計 125 kcal",
+    "    - ナッツ: 25 kcal",
+    "    - 牛乳: 100 kcal",
+    "",
+  ].join("\n");
+  await copyPage.locator("#copyDayMarkdown").click();
+  await copyPage.waitForFunction(() =>
+    document.getElementById("toast").textContent.includes("コピーしました"),
+  );
+  assert.equal(
+    await copyPage.evaluate(() => navigator.clipboard.readText()),
+    expectedCopy,
+  );
+  assert.equal(
+    await copyPage.locator("#copyMarkdownDialog").isVisible(),
+    false,
+  );
+  await copyPage.evaluate(() => {
+    Object.defineProperty(navigator.clipboard, "writeText", {
+      configurable: true,
+      value: () =>
+        Promise.reject(new DOMException("Denied", "NotAllowedError")),
+    });
+  });
+  await copyPage.locator("#copyDayMarkdown").click();
+  await copyPage.locator("#copyMarkdownDialog").waitFor();
+  assert.equal(
+    await copyPage.locator("#copyMarkdownText").inputValue(),
+    expectedCopy,
+  );
+  await copyPage.locator("#selectMarkdownText").click();
+  assert.equal(
+    await copyPage
+      .locator("#copyMarkdownText")
+      .evaluate((el) => el.value.slice(el.selectionStart, el.selectionEnd)),
+    expectedCopy,
+  );
+  assert.equal(
+    await copyPage.evaluate(
+      () => document.documentElement.scrollWidth > innerWidth,
+    ),
+    false,
+  );
+  await copyPage.screenshot({
+    path: "/tmp/caloritype-markdown-copy-mobile.png",
+  });
+  await copyPage.locator("#copyMarkdownDialog .close-dialog").click();
+  await copyPage.locator("#dayInput").fill(copyDates.empty);
+  await copyPage.locator("#dayInput").dispatchEvent("change");
+  await copyPage.waitForFunction(
+    () => document.getElementById("entryCount").textContent === "0",
+  );
+  await copyPage.locator("#copyDayMarkdown").click();
+  assert.match(
+    await copyPage.locator("#toast").innerText(),
+    /記録がありません/,
+  );
+  assert.equal(
+    await copyPage.locator("#copyMarkdownDialog").isVisible(),
+    false,
+  );
+  assert.equal(
+    await copyPage.evaluate(() => navigator.clipboard.readText()),
+    expectedCopy,
+  );
+  await copyPage.locator("#dayInput").fill(copyDates.other);
+  await copyPage.locator("#dayInput").dispatchEvent("change");
+  await copyPage.locator('[data-entry="copy-other-day"]').waitFor();
+  await copyPage.locator("#copyDayMarkdown").click();
+  await copyPage.locator("#copyMarkdownDialog").waitFor();
+  assert.equal(
+    await copyPage.locator("#copyMarkdownText").inputValue(),
+    "- 昼: 小計 600 kcal\n    - 別の日の食事: 600 kcal\n",
+  );
+  await copyPage.locator("#copyMarkdownDialog .close-dialog").click();
+  await copyPage.locator("#modeSwitch").selectOption("demo");
+  await copyPage.waitForFunction(
+    () => document.getElementById("modeCaption").textContent === "デモモード",
+  );
+  await copyPage.locator("#copyDayMarkdown").click();
+  await copyPage.locator("#copyMarkdownDialog").waitFor();
+  assert.doesNotMatch(
+    await copyPage.locator("#copyMarkdownText").inputValue(),
+    /カレー|別の日の食事/,
+  );
+  await copyContext.close();
   assert.deepEqual(errors, []);
   await browser.close();
   console.log(
@@ -459,6 +629,10 @@ let activeBrowser;
         "same-record last-commit-wins",
         "unrelated concurrent edits merged",
         "mobile layout",
+        "day Markdown clipboard and meal subtotals",
+        "logical-day boundary and mode isolation in copied text",
+        "Markdown names escaped and empty groups omitted",
+        "clipboard denial manual selection and empty-day preservation",
       ],
     }),
   );
